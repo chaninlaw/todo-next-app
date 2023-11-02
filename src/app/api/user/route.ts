@@ -1,4 +1,3 @@
-import { hash } from "@/lib"
 import prisma from "@/server/db"
 import { User } from "@prisma/client"
 import { getServerSession } from "next-auth"
@@ -32,7 +31,7 @@ export async function POST(req: NextRequest) {
   const user = await prisma.user.create({
     data: {
       email,
-      password: hash(password),
+      password,
       role: "USER",
       name: email,
     },

@@ -54,7 +54,7 @@ export function AuthForm({
 
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const { email, password } = values
     setIsLoading(true)
 
@@ -83,6 +83,21 @@ export function AuthForm({
         .catch((err) => console.error(err))
         .finally(() => setIsLoading(false))
     }
+  }
+
+  const handleGithubSignIn = () => {
+    setIsLoading(true)
+    signIn("github", { callbackUrl: "/todos", redirect: true })
+      .then((response) => {
+        console.log("response", { response })
+        if (response?.error) {
+          // show notification for user
+        } else {
+          // redirect to destination page
+        }
+      })
+      .catch((error) => console.error(error))
+      .finally(() => setIsLoading(false))
   }
 
   return (
@@ -158,7 +173,7 @@ export function AuthForm({
       <Button
         variant="outline"
         type="button"
-        onClick={() => signIn("github")}
+        onClick={handleGithubSignIn}
         disabled={isLoading}
       >
         {isLoading ? (

@@ -1,6 +1,5 @@
-import { getServerSession } from "next-auth"
 import { authOptions } from "./api/auth/[...nextauth]/route"
-import { signOut } from "next-auth/react"
+import { getServerSession } from "next-auth"
 import NavMenu from "@/components/NavMenu"
 
 export default async function Home() {
@@ -8,7 +7,6 @@ export default async function Home() {
 
   return (
     <div className="">
-      <NavMenu />
       <h1 className="text-9xl">Home</h1>
       <h2>getServerSession result:</h2>
       <>{session?.user ? session.user.role : "Not Logged In"}</>

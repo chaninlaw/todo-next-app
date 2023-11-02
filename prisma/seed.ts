@@ -1,12 +1,12 @@
+import { hash } from "../src/lib/utils"
 import { PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
 async function main() {
-  const { createHash } = await import("node:crypto")
-  const password = createHash("md5").update(`secret`).digest("hex")
+  const password = hash(`secret`)
   const user = await prisma.user.upsert({
-    where: { email: "test@email.com" },
+    where: { email: "test@test.com" },
     update: {},
     create: {
       email: "test@test.com",
@@ -15,7 +15,7 @@ async function main() {
       role: "ADMIN",
     },
   })
-  console.log({ user })
+  console.debug({ user })
 }
 
 main()

@@ -24,7 +24,8 @@ model Account {
   scope             String?
   id_token          String? // @db.Text
   session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -37,12 +38,17 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
-  password      String?
   email         String?   @unique
   emailVerified DateTime?
+  password      String?
   role          Role      @default(USER)
   image         String?
   accounts      Account[]
@@ -66,9 +72,4 @@ model Todo {
   done      Boolean  @default(false)
   user      User?    @relation(fields: [userId], references: [id])
   userId    String?
-}
-
-enum Role {
-  USER
-  ADMIN
 }

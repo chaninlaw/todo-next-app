@@ -1,10 +1,10 @@
 import { getServerSession } from "next-auth"
 import { authOptions } from "../api/auth/[...nextauth]/route"
 import { AuthForm } from "@/components/AuthForm"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import Image from "next/image"
 import { redirect } from "next/navigation"
+import Link from "next/link"
+import Image from "next/image"
+import { Button } from "@/components/ui/button"
 
 interface Props {
   searchParams?: Record<"callbackUrl" | "error", string>
@@ -74,7 +74,7 @@ export default async function SignIn({ searchParams }: Props) {
               <p className="text-sm text-muted-foreground">
                 <>
                   Don&apos;t have an account?
-                  <Link href="/sign-up">
+                  <Link href="/register">
                     <Button
                       className="pl-1 text-zinc-500 hover:text-zinc-700"
                       variant={"link"}

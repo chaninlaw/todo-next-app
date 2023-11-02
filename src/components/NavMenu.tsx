@@ -1,12 +1,9 @@
 "use client"
-import Link from "next/link"
+
 import { signIn, signOut, useSession } from "next-auth/react"
 import { Button } from "./ui/button"
-import { redirect } from "next/navigation"
 
-interface Props {}
-
-export default function NavMenu({}: Props) {
+export default function NavMenu() {
   return (
     <div>
       <AuthButton />
@@ -17,15 +14,21 @@ export default function NavMenu({}: Props) {
 function AuthButton() {
   const { data: session } = useSession()
 
+  const handleSignIn = () => {
+    signIn()
+  }
+
+  const handleSignOut = () => {
+    signOut({ redirect: true, callbackUrl: "/" })
+  }
+
   if (session) {
     return (
       <>
-        {session?.user?.name} <br />
-        <Button
-          onClick={() => signOut({ redirect: true, callbackUrl: "/sign-in" })}
-        >
-          Sign out
-        </Button>
+        {session.user?.name} <br />
+        {JSON.stringify(session)}
+        <br />
+        <Button onClick={handleSignOut}>Sign out</Button>
       </>
     )
   }
@@ -33,7 +36,7 @@ function AuthButton() {
   return (
     <>
       Not signed in <br />
-      <Button onClick={() => signIn()}>Sign in</Button>
+      <Button onClick={handleSignIn}>Sign in</Button>
     </>
   )
 }
