@@ -1,4 +1,4 @@
-import { hash } from "../src/lib/utils"
+import { hash } from "../src/app/lib/utils"
 import { PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()
