@@ -1,5 +1,6 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { signOut, useSession } from "next-auth/react"
+"use client"
+
+import { signOut } from "next-auth/react"
 import React from "react"
 import {
   DropdownMenu,
@@ -14,45 +15,21 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu"
-import { isColorLight, nameToColor } from "@/app/lib/utils"
+} from "@/components/ui/dropdown-menu"
+import UserAvatar from "./user-avatar"
 
 interface Props {}
 
 export default function NavMenu({}: Props) {
-  const { data: session } = useSession()
-
-  if (!session) return <></>
-
-  let userName = ""
-  if (!session.user.name) {
-    userName = "N A"
-  } else {
-    userName = session.user.name
-  }
-  const [first, last] = userName.split(" ")
-  const userColor = nameToColor(userName)
-  const isLightColor = isColorLight(userColor)
-
   const handleSignOut = () => signOut({ redirect: true, callbackUrl: "/" })
 
   return (
     <nav className="hidden md:flex">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Avatar>
-            <AvatarImage src={session.user.image ?? undefined} />
-            <AvatarFallback
-              style={{
-                backgroundColor: userColor,
-                color: isLightColor ? "black" : "white",
-              }}
-            >
-              {first && last
-                ? first.charAt(0).toUpperCase() + last.charAt(0).toUpperCase()
-                : first.charAt(0).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+          <div>
+            <UserAvatar />
+          </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>

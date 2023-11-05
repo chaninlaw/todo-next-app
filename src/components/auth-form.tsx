@@ -1,8 +1,9 @@
 "use client"
-import * as React from "react"
+
+import { useState } from "react"
 import * as z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { cn, hash, toastCatch } from "@/app/lib/utils"
+import { HTTP_RESPONSE_CODE, cn, hash, toastCatch } from "@/lib/utils"
 import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import {
@@ -17,34 +18,16 @@ import { Input } from "@/components/ui/input"
 import { Loader, Github } from "lucide-react"
 import { signIn } from "next-auth/react"
 import { useMutation } from "@tanstack/react-query"
-import { toast, useToast } from "./ui/use-toast"
+import { useRouter } from "next/navigation"
+import { serverError } from "@/lib/api"
+import { isAxiosError } from "axios"
+import { signupSchema } from "@/lib/validations/signup"
+import { createUser } from "./api"
 
 interface LoginFormProps extends React.HTMLAttributes<HTMLDivElement> {
   callbackUrl?: string
   error?: string
   formType: "sign-up" | "sign-in"
-}
-
-const createUser = async ({
-  email,
-  password,
-}: {
-  email: string
-  password: string
-}) => {
-  const response = await fetch("/api/v1/user", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, password }),
-  })
-
-  if (!response.ok) {
-    throw new Error("Failed to create user")
-  }
-
-  return response.json()
 }
 
 export function AuthForm({
@@ -54,32 +37,21 @@ export function AuthForm({
   formType,
   ...props
 }: LoginFormProps) {
-  const formSchema = z
-    .object({
-      email: z.string().email(),
-      password: z.string().min(6).max(50),
-    })
-    .refine((data) => data, {
-      message: "Your email and password invalid.",
-      path: ["password"],
-      params: ["error"],
-    })
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const [loading, setLoading] = useState<boolean>(false)
+  const { push } = useRouter()
+  const { mutate: signUp } = useMutation({
+    mutationFn: createUser,
+    mutationKey: ["create", "user"],
+  })
+  const form = useForm<z.infer<typeof signupSchema>>({
+    resolver: zodResolver(signupSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   })
-  // const { toast } = useToast()
-  const [loading, setLoading] = React.useState<boolean>(false)
-  const { mutate: signUp } = useMutation({
-    mutationFn: createUser,
-    mutationKey: ["create", "user"],
-  })
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof signupSchema>) => {
     const { email, password } = values
     setLoading(true)
 
@@ -88,12 +60,29 @@ export function AuthForm({
       signUp(
         { email, password },
         {
-          onSuccess: () =>
-            signIn("credentials", {
-              email,
-              password: hash(password),
-            }),
-          onError: toastCatch,
+          onSuccess: (res) => {
+            console.log({ res })
+            if (res.status === HTTP_RESPONSE_CODE.POST) {
+              signIn("credentials", {
+                email,
+                password: hash(password),
+                redirect: false,
+              })
+                .then((res) => {
+                  if (res && res.ok) push("/todos")
+                })
+                .catch(toastCatch)
+            } else {
+              toastCatch(new Error(res.data.message))
+            }
+          },
+          onError: (err) => {
+            if (isAxiosError(err)) {
+              toastCatch(err.response?.data)
+            } else {
+              toastCatch(err)
+            }
+          },
           onSettled: () => setLoading(false),
         }
       )
@@ -101,9 +90,19 @@ export function AuthForm({
       await signIn("credentials", {
         email,
         password,
-        callbackUrl: callbackUrl ?? "/todos",
+        redirect: false,
       })
-        .catch(toastCatch)
+        .then((res) => {
+          if (res) {
+            if (res.error && !res.ok) {
+              toastCatch(new Error(res.error))
+            } else {
+              push("/todos")
+            }
+          } else {
+            serverError(res)
+          }
+        })
         .finally(() => setLoading(false))
     }
   }
@@ -126,7 +125,7 @@ export function AuthForm({
   }
 
   return (
-    <div className={cn("grid gap-6", className)} {...props}>
+    <div className={cn("grid gap-6 text-primary", className)} {...props}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid gap-2">
@@ -202,11 +201,10 @@ export function AuthForm({
         {loading ? (
           <Loader className="mr-2 h-4 w-4 animate-spin" />
         ) : (
-          <Github className="mr-2 h-4 w-4 outline outline-1 outline-offset-4 outline-zinc-400 rounded-md" />
+          <Github className="mr-2 h-4 w-4 outline outline-1 outline-offset-4 outline-foreground rounded-xl" />
         )}{" "}
         Github Account
       </Button>
-      <Button onClick={() => toast({ title: "Test" })}>Toast</Button>
     </div>
   )
 }

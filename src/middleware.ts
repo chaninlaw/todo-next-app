@@ -1,28 +1,46 @@
-import {
-  NextAuthMiddlewareOptions,
-  NextMiddlewareWithAuth,
-  withAuth,
-} from "next-auth/middleware"
+import { getToken } from "next-auth/jwt"
+import { withAuth } from "next-auth/middleware"
 import { NextResponse } from "next/server"
 
-const middleware: NextMiddlewareWithAuth = (request) => {
-  console.log(request.nextUrl.pathname)
-  console.log(request.nextauth.token)
+export default withAuth(
+  async function middleware(req) {
+    const token = await getToken({ req })
+    const isAuth = !!token
+    const isAuthPage =
+      req.nextUrl.pathname.startsWith("/login") ||
+      req.nextUrl.pathname.startsWith("/register")
 
-  if (
-    request.nextUrl.pathname.startsWith("/admin") &&
-    request.nextauth.token?.role !== "ADMIN"
-  ) {
-    return NextResponse.rewrite(new URL("/denied", request.url))
+    if (isAuthPage) {
+      if (isAuth) {
+        return NextResponse.redirect(new URL("/todos", req.url))
+      }
+
+      return null
+    }
+
+    if (!isAuth) {
+      let from = req.nextUrl.pathname
+      if (req.nextUrl.search) {
+        from += req.nextUrl.search
+      }
+
+      return NextResponse.redirect(
+        new URL(`/login?from=${encodeURIComponent(from)}`, req.url)
+      )
+    }
+  },
+  {
+    callbacks: {
+      async authorized() {
+        // This is a work-around for handling redirect on auth pages.
+        // We return true here so that the middleware function above
+        // is always called.
+        return true
+      },
+    },
   }
+)
+
+export const config = {
+  matcher: ["/todos/:path*", "/login", "/register"],
 }
-
-const callbacks: NextAuthMiddlewareOptions["callbacks"] = {
-  authorized: ({ token }) => !!token,
-}
-
-// Applies next-auth only to matching routes - can be regex
-// Ref: https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
-export const config = { matcher: ["/app/:path*", "/todos/:path*"] }
-
-export default withAuth(middleware, { callbacks })

@@ -5,8 +5,8 @@ import {
   putFail,
   putSuccess,
   serverError,
-} from "@/app/lib/api"
-import prisma from "@/server/db"
+} from "@/lib/api"
+import prisma from "@/lib/db"
 import { Todo } from "@prisma/client"
 import { NextRequest } from "next/server"
 

@@ -4,8 +4,8 @@ import {
   postFail,
   postSuccess,
   serverError,
-} from "@/app/lib/api"
-import prisma from "@/server/db"
+} from "@/lib/api"
+import prisma from "@/lib/db"
 import { Todo } from "@prisma/client"
 import { getServerSession } from "next-auth"
 import { NextRequest, NextResponse } from "next/server"

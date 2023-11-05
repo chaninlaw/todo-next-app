@@ -1,11 +1,16 @@
 "use client"
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { Session } from "next-auth"
 import { SessionProvider } from "next-auth/react"
+import { ThemeProvider } from "next-themes"
 import { PropsWithChildren, useState } from "react"
+import { Analytics } from "./analytics"
+import { TailwindIndicator } from "./tailwind-indicator"
+import { Toaster } from "./ui/toaster"
 
-export default function Provider({
+export default function Providers({
   session,
   children,
 }: PropsWithChildren<{ session: Session | null }>) {
@@ -13,7 +18,19 @@ export default function Provider({
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
-      <SessionProvider session={session}>{children}</SessionProvider>
+      <SessionProvider session={session}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <Analytics />
+          <Toaster />
+          <TailwindIndicator />
+        </ThemeProvider>
+      </SessionProvider>
     </QueryClientProvider>
   )
 }

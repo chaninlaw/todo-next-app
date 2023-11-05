@@ -34,7 +34,7 @@ export function Canvas() {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute h-[600px] w-full max-w-[600px] aspect-square rounded-full -top-0 -translate-y-40 -z-10 transform-gpu md:max-w-[800px] md:h-[800px] md:-translate-y-[300px] lg:max-w-[1000px] lg:h-[1000px] lg:-translate-y-[600px]  xl:max-w-[1400px] xl:h-[1400px] xl:-translate-y-[700px] xl:translate-x-[300px]"
+      className="absolute h-[600px] w-full max-w-[600px] aspect-square rounded-full -top-0 -translate-y-40 -z-10 transform-gpu md:max-w-[800px] md:h-[800px] md:-translate-y-[300px] lg:max-w-[1000px] lg:h-[1000px] lg:-translate-y-[600px]  xl:max-w-[1350px] xl:h-[1350px] xl:-translate-y-[700px] xl:translate-x-[300px]"
       width="32px"
       height="32px"
     />

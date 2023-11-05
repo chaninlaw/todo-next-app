@@ -15,32 +15,33 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from "@/components/ui/menubar"
+import { Command } from "lucide-react"
+import { useRouter } from "next/navigation"
 
-export function HeadMenu() {
+export function AppMenu() {
+  const { push } = useRouter()
   return (
     <Menubar className="rounded-none border-b border-none px-2 lg:px-4">
       <MenubarMenu>
-        <MenubarTrigger className="font-bold">Music</MenubarTrigger>
+        <MenubarTrigger className="font-bold">
+          <Command size={16} />
+          Todos
+        </MenubarTrigger>
         <MenubarContent>
-          <MenubarItem>About Music</MenubarItem>
+          <MenubarItem onClick={() => push("/")}>Home</MenubarItem>
+          <MenubarItem onClick={() => push("/about")}>About</MenubarItem>
           <MenubarSeparator />
           <MenubarItem>
-            Preferences... <MenubarShortcut>⌘,</MenubarShortcut>
+            Preferences <MenubarShortcut>⌘,</MenubarShortcut>
           </MenubarItem>
           <MenubarSeparator />
-          <MenubarItem>
-            Hide Music... <MenubarShortcut>⌘H</MenubarShortcut>
-          </MenubarItem>
-          <MenubarItem>
-            Hide Others... <MenubarShortcut>⇧⌘H</MenubarShortcut>
-          </MenubarItem>
           <MenubarShortcut />
           <MenubarItem>
-            Quit Music <MenubarShortcut>⌘Q</MenubarShortcut>
+            Quit <MenubarShortcut>⌘Q</MenubarShortcut>
           </MenubarItem>
         </MenubarContent>
       </MenubarMenu>
-      <MenubarMenu>
+      {/* <MenubarMenu>
         <MenubarTrigger className="relative">File</MenubarTrigger>
         <MenubarContent>
           <MenubarSub>
@@ -195,7 +196,7 @@ export function HeadMenu() {
           <MenubarSeparator />
           <MenubarItem inset>Add Account...</MenubarItem>
         </MenubarContent>
-      </MenubarMenu>
+      </MenubarMenu> */}
     </Menubar>
   )
 }

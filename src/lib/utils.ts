@@ -48,13 +48,21 @@ export function nameToColor(name: string): string {
 export function isColorLight(color: string): boolean {
   // Check if the input color is in the hex format (#RRGGBB)
   const hex = color.slice(1)
-  const r = parseInt(hex.substr(0, 2), 16)
-  const g = parseInt(hex.substr(2, 2), 16)
-  const b = parseInt(hex.substr(4, 2), 16)
+  const r = parseInt(hex.slice(0, 2), 16)
+  const g = parseInt(hex.slice(2, 2), 16)
+  const b = parseInt(hex.slice(4, 2), 16)
 
   // Calculate relative luminance (perceived brightness)
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
 
   // Check if the luminance suggests the color is light (WCAG threshold is 0.5)
   return luminance > 0.5
+}
+
+export const HTTP_RESPONSE_CODE = {
+  GET: 200,
+  POST: 200,
+  PUT: 200,
+  PATCH: 200,
+  DELETE: 204,
 }

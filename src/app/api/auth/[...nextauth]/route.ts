@@ -4,7 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import { PrismaClient } from "@prisma/client"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { NextAuthOptions } from "next-auth"
-import { compare } from "@/app/lib/utils"
+import { compare } from "@/lib/utils"
 
 const prisma = new PrismaClient()
 const adapter = PrismaAdapter(prisma)
@@ -36,7 +36,8 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        if (!credentials?.email || !credentials?.password)
+        if (!credentials) throw new Error("Invalid input")
+        if (!credentials.email || !credentials.password)
           throw new Error("Please provide both your email and password")
 
         const user = await prisma.user.findUnique({
@@ -50,7 +51,7 @@ export const authOptions: NextAuthOptions = {
         ) {
           return user
         } else {
-          return null
+          throw new Error("Login failed. Please, try again")
         }
       },
     }),
@@ -92,8 +93,8 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/login",
     newUser: "/register",
-    // error: "/error",
-    // verifyRequest: "/login",
+    error: "/error",
+    verifyRequest: "/login",
   },
   debug: process.env.NODE_ENV !== "production",
   logger: {
