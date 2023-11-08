@@ -17,7 +17,7 @@ export default function UserAvatar({ className }: Props) {
 
   let userName = ""
   if (!user?.name) {
-    userName = "N A"
+    userName = "U K"
   } else {
     userName = user.name
   }
