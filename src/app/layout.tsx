@@ -1,21 +1,25 @@
 import "@/styles/globals.css"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import { getServerSession } from "next-auth"
-
-import Providers from "@/components/providers"
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import { Inter as FontSans } from "next/font/google"
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { ModeToggle } from "@/components/mode-toggle"
+import Providers from "@/components/providers"
+import { getServerSession } from "next-auth"
+import { authOptions } from "./(auth)/api/auth/[...nextauth]/route"
 
-const inter = Inter({ subsets: ["latin"], variable: "---font-inter" })
+export const fontSans = FontSans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+})
 
 export const metadata: Metadata = {
-  title: "Todos App | Ultimate Task Management Solution",
+  title: {
+    template: "%s | Todos App",
+    default: "Todos App | Ultimate Task Management Solution",
+  },
   description: "Ultimate Task Management Solution",
   icons: {
     icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
   },
 }
 
@@ -25,24 +29,16 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
   const session = await getServerSession(authOptions)
-
   return (
-    <>
-      <html lang="en" suppressHydrationWarning>
-        <body
-          className={cn(
-            "min-h-screen bg-background antialiased",
-            inter.className
-          )}
-        >
-          <Providers session={session}>
-            <main>{children}</main>
-          </Providers>
-          <div className="fixed bottom-10 right-20">
-            <ModeToggle />
-          </div>
-        </body>
-      </html>
-    </>
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={cn(
+          "min-h-screen bg-background font-sans antialiased",
+          fontSans.variable
+        )}
+      >
+        <Providers session={session}>{children}</Providers>
+      </body>
+    </html>
   )
 }

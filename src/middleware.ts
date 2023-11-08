@@ -12,7 +12,7 @@ export default withAuth(
 
     if (isAuthPage) {
       if (isAuth) {
-        return NextResponse.redirect(new URL("/todos", req.url))
+        return NextResponse.redirect(new URL("/app", req.url))
       }
 
       return null

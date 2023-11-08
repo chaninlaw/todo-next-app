@@ -1,4 +1,3 @@
-import { toast } from "@/components/ui/use-toast"
 import { type ClassValue, clsx } from "clsx"
 import { createHash } from "crypto"
 import { twMerge } from "tailwind-merge"
@@ -21,13 +20,9 @@ export function fromDate(time: number, date = Date.now()) {
 
 export function toastCatch(error: any) {
   if (error instanceof Error) {
-    toast({
-      title: "Something went wrong",
-      description: error.message,
-      variant: "destructive",
-    })
+    throw new Error(error.message)
   } else {
-    toast({ title: "Something went wrong", variant: "destructive" })
+    throw new Error("Something went wrong")
   }
 }
 

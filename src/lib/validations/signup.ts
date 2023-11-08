@@ -1,12 +1,14 @@
 import { z } from "zod"
 
-export const signupSchema = z
-  .object({
-    email: z.string().email(),
-    password: z.string().min(6).max(50),
-  })
-  .refine((data) => data, {
-    message: "Your email and password invalid.",
-    path: ["password"],
-    params: ["error"],
-  })
+export const CredentialsSchema = z.object({
+  email: z.string().email({
+    message: "Please, input valid email.",
+  }),
+  password: z
+    .string({
+      required_error: "Please, input your password.",
+      invalid_type_error: "Please, input your password.",
+    })
+    .min(6)
+    .max(50),
+})

@@ -1,9 +1,8 @@
 "use client"
 
 import { nameToColor, isColorLight, cn } from "@/lib/utils"
-import { useSession } from "next-auth/react"
-import React from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useSession } from "next-auth/react"
 
 interface Props {
   className?: string
@@ -14,22 +13,21 @@ export default function UserAvatar({ className }: Props) {
 
   if (!session) return <></>
 
+  const { user } = session
+
   let userName = ""
-  if (!session.user.name) {
+  if (!user?.name) {
     userName = "N A"
   } else {
-    userName = session.user.name
+    userName = user.name
   }
   const [first, last] = userName.split(" ")
   const userColor = nameToColor(userName)
   const isLightColor = isColorLight(userColor)
 
   return (
-    <Avatar>
-      <AvatarImage
-        className={className}
-        src={session.user.image ?? undefined}
-      />
+    <Avatar className="border border-foreground">
+      <AvatarImage className={className} src={user?.image ?? undefined} />
       <AvatarFallback
         className={cn({
           "text-white": true,

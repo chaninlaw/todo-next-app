@@ -1,9 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import * as z from "zod"
+import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { HTTP_RESPONSE_CODE, cn, hash, toastCatch } from "@/lib/utils"
+import { cn, toastCatch } from "@/lib/utils"
 import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import {
@@ -16,13 +16,10 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Loader, Github } from "lucide-react"
+import { CredentialsSchema } from "@/lib/validations/signup"
+import { register } from "@/lib/actions/authenticate"
 import { signIn } from "next-auth/react"
-import { useMutation } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
-import { serverError } from "@/lib/api"
-import { isAxiosError } from "axios"
-import { signupSchema } from "@/lib/validations/signup"
-import { createUser } from "./api"
 
 interface LoginFormProps extends React.HTMLAttributes<HTMLDivElement> {
   callbackUrl?: string
@@ -37,90 +34,38 @@ export function AuthForm({
   formType,
   ...props
 }: LoginFormProps) {
-  const [loading, setLoading] = useState<boolean>(false)
   const { push } = useRouter()
-  const { mutate: signUp } = useMutation({
-    mutationFn: createUser,
-    mutationKey: ["create", "user"],
-  })
-  const form = useForm<z.infer<typeof signupSchema>>({
-    resolver: zodResolver(signupSchema),
+  const [loading, setLoading] = useState<boolean>(false)
+
+  const form = useForm<z.infer<typeof CredentialsSchema>>({
+    resolver: zodResolver(CredentialsSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   })
 
-  const onSubmit = async (values: z.infer<typeof signupSchema>) => {
-    const { email, password } = values
+  const onSubmit = async (credentials: z.infer<typeof CredentialsSchema>) => {
     setLoading(true)
-
     if (formType === "sign-up") {
-      setLoading(true)
-      signUp(
-        { email, password },
-        {
-          onSuccess: (res) => {
-            console.log({ res })
-            if (res.status === HTTP_RESPONSE_CODE.POST) {
-              signIn("credentials", {
-                email,
-                password: hash(password),
-                redirect: false,
-              })
-                .then((res) => {
-                  if (res && res.ok) push("/todos")
-                })
-                .catch(toastCatch)
-            } else {
-              toastCatch(new Error(res.data.message))
-            }
-          },
-          onError: (err) => {
-            if (isAxiosError(err)) {
-              toastCatch(err.response?.data)
-            } else {
-              toastCatch(err)
-            }
-          },
-          onSettled: () => setLoading(false),
-        }
-      )
-    } else {
+      await register(credentials)
+        .catch(toastCatch)
+        .finally(() => setLoading(false))
+    } else if (formType === "sign-in") {
       await signIn("credentials", {
-        email,
-        password,
+        ...credentials,
         redirect: false,
       })
-        .then((res) => {
-          if (res) {
-            if (res.error && !res.ok) {
-              toastCatch(new Error(res.error))
-            } else {
-              push("/todos")
-            }
-          } else {
-            serverError(res)
-          }
-        })
+        .then(() => push("/app"))
+        .catch(toastCatch)
         .finally(() => setLoading(false))
     }
   }
 
   const handleGithubSignIn = () => {
     setLoading(true)
-    signIn("github", { callbackUrl: "/todos", redirect: true })
-      .then((response) => {
-        console.log("response", { response })
-        if (response?.error) {
-          // show notification for user
-          console.log(response)
-        } else {
-          // redirect to destination page
-          console.log(response)
-        }
-      })
-      .catch((error) => console.error(error))
+    signIn("github", { redirect: false })
+      .catch(toastCatch)
       .finally(() => setLoading(false))
   }
 
@@ -144,11 +89,12 @@ export function AuthForm({
                         autoCapitalize="none"
                         autoComplete="email"
                         autoCorrect="off"
+                        aria-describedby="email-error"
                         disabled={loading}
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage id="email-error" aria-live="polite" />
                   </FormItem>
                 )}
               />
@@ -162,6 +108,7 @@ export function AuthForm({
                       <Input
                         id="password"
                         type="password"
+                        aria-describedby="password-error"
                         autoComplete={
                           formType === "sign-up"
                             ? "new-password"
@@ -170,7 +117,7 @@ export function AuthForm({
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage id="password-error" aria-live="polite" />
                   </FormItem>
                 )}
               />

@@ -38,11 +38,6 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-enum Role {
-  USER
-  ADMIN
-}
-
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -54,6 +49,11 @@ model User {
   accounts      Account[]
   sessions      Session[]
   todo          Todo[]
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 model VerificationToken {
@@ -68,8 +68,14 @@ model Todo {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  text      String
-  done      Boolean  @default(false)
+  title     String
+  status    Status   @default(ACTIVE)
   user      User?    @relation(fields: [userId], references: [id])
   userId    String?
+}
+
+enum Status {
+  ACTIVE
+  COMPLETED
+  BLOCK
 }

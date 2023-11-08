@@ -1,22 +1,13 @@
-import { AuthForm } from "@/components/auth-form"
-import { redirect } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { Command } from "lucide-react"
+import { AuthForm } from "@/components/auth-form"
 
 interface Props {
   searchParams?: Record<"callbackUrl" | "error", string>
 }
 
 export default async function SignIn({ searchParams }: Props) {
-  const session = await getServerSession(authOptions)
-
-  if (session) {
-    return redirect("/todos")
-  }
-
   return (
     <>
       <div className="md:hidden">

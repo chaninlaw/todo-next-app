@@ -1,6 +1,6 @@
-import LandingPageMenu from "@/components/landingpage-menu"
+import LandingPageMenu from "@/components/landing/landingpage-menu"
 import { Button } from "@/components/ui/button"
-import { Canvas } from "@/components/ui/canvas"
+import { Canvas } from "@/components/landing/canvas"
 import { Separator } from "@/components/ui/separator"
 import { Github } from "lucide-react"
 import Image from "next/image"
@@ -9,7 +9,7 @@ import Link from "next/link"
 export default async function Home() {
   return (
     <>
-      <div>
+      <div className="relative z-[2]">
         <LandingPageMenu />
         <section
           id="hero"
@@ -20,7 +20,7 @@ export default async function Home() {
           </h1>
           <div className="hidden h-full md:block md:row-span-2">
             <Image
-              className="h-full object-cover object-left block"
+              className="h-full object-cover object-left block z-10"
               src="/hero/hero-page-rm-bg.png"
               alt="hero"
               height={2000}
@@ -34,7 +34,7 @@ export default async function Home() {
               productivity, and bring a sense of organization and clarity to
               your life.
             </p>
-            <Link href="/todos">
+            <Link href="/app">
               <Button className="md:w-60 xl:mt-4">Get start now</Button>
             </Link>
           </div>
@@ -114,7 +114,7 @@ export default async function Home() {
           <p className="text-zinc-400">Todo App. All right reserved. © 2023</p>
         </footer>
       </div>
-      <Canvas />
+      <Canvas className="absolute z-[1]" />
     </>
   )
 }
