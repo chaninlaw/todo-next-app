@@ -16,10 +16,10 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Loader, Github } from "lucide-react"
-import { CredentialsSchema } from "@/lib/validations/signup"
 import { register } from "@/lib/actions/authenticate"
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { CredentialsSchema } from "@/lib/actions/authenticate/validation"
 
 interface LoginFormProps extends React.HTMLAttributes<HTMLDivElement> {
   callbackUrl?: string
@@ -35,8 +35,7 @@ export function AuthForm({
   ...props
 }: LoginFormProps) {
   const { push } = useRouter()
-  const [loading, setLoading] = useState<boolean>(false)
-
+  const [authLoading, setAuthLoading] = useState(false)
   const form = useForm<z.infer<typeof CredentialsSchema>>({
     resolver: zodResolver(CredentialsSchema),
     defaultValues: {
@@ -46,27 +45,26 @@ export function AuthForm({
   })
 
   const onSubmit = async (credentials: z.infer<typeof CredentialsSchema>) => {
-    setLoading(true)
     if (formType === "sign-up") {
-      await register(credentials)
-        .catch(toastCatch)
-        .finally(() => setLoading(false))
+      await register(credentials).catch(toastCatch)
     } else if (formType === "sign-in") {
       await signIn("credentials", {
         ...credentials,
         redirect: false,
       })
-        .then(() => push("/app"))
+        .then(() => push("/todo"))
         .catch(toastCatch)
-        .finally(() => setLoading(false))
     }
   }
 
-  const handleGithubSignIn = () => {
-    setLoading(true)
-    signIn("github", { redirect: false })
+  const handleGithubSignIn = async () => {
+    setAuthLoading(true)
+    await signIn("github", {
+      redirect: false,
+      callbackUrl: "/todo",
+    })
       .catch(toastCatch)
-      .finally(() => setLoading(false))
+      .finally(() => setAuthLoading(false))
   }
 
   return (
@@ -90,7 +88,7 @@ export function AuthForm({
                         autoComplete="email"
                         autoCorrect="off"
                         aria-describedby="email-error"
-                        disabled={loading}
+                        disabled={form.formState.isSubmitting}
                         {...field}
                       />
                     </FormControl>
@@ -122,8 +120,10 @@ export function AuthForm({
                 )}
               />
             </div>
-            <Button type="submit" disabled={loading}>
-              {loading && <Loader className="mr-2 h-4 w-4 animate-spin" />}
+            <Button type="submit" disabled={form.formState.isSubmitting}>
+              {form.formState.isSubmitting && (
+                <Loader className="mr-2 h-4 w-4 animate-spin" />
+              )}
               {formType === "sign-up" ? "Sign up" : "Log in with Email"}
             </Button>
           </div>
@@ -143,13 +143,13 @@ export function AuthForm({
         variant="outline"
         type="button"
         onClick={handleGithubSignIn}
-        disabled={loading}
+        disabled={form.formState.isSubmitting}
       >
-        {loading ? (
-          <Loader className="mr-2 h-4 w-4 animate-spin" />
+        {authLoading ? (
+          <Loader className="mr-4 h-4 w-4 animate-spin" />
         ) : (
-          <Github className="mr-2 h-4 w-4 outline outline-1 outline-offset-4 outline-foreground rounded-xl" />
-        )}{" "}
+          <Github className="mr-4 h-4 w-4 outline outline-1 outline-offset-4 outline-foreground rounded-xl" />
+        )}
         Github Account
       </Button>
     </div>

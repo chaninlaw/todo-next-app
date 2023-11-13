@@ -1,14 +1,11 @@
-"use client"
-
 import { Button } from "@/components/ui/button"
 import { getCurrentUser } from "@/lib/session"
-import { signIn, useSession } from "next-auth/react"
-import NavMenu from "./nav-menu"
+import { signIn } from "next-auth/react"
 
-export default function SignInButton() {
-  const { data: session } = useSession()
+export default async function SignInButton() {
+  const user = await getCurrentUser()
 
-  if (session) return null
+  if (user) return null
 
   return <Button onClick={() => signIn()}>Sign In</Button>
 }

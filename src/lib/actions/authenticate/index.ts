@@ -1,11 +1,11 @@
 "use server"
 
-import { CredentialsSchema } from "@/lib/validations/signup"
 import { z } from "zod"
 import prisma from "@/lib/db"
 import { hash } from "@/lib/utils"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
+import { CredentialsSchema } from "./validation"
 
 export async function register(credentials: z.infer<typeof CredentialsSchema>) {
   const validatedFields = CredentialsSchema.safeParse(credentials)
@@ -32,6 +32,6 @@ export async function register(credentials: z.infer<typeof CredentialsSchema>) {
     },
   })
 
-  revalidatePath("/app")
-  redirect("/app")
+  revalidatePath("/todo")
+  redirect("/todo")
 }

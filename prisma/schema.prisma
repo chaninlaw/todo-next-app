@@ -17,15 +17,14 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? // @db.Text
-  access_token      String? // @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? // @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -44,11 +43,12 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   password      String?
-  role          Role      @default(USER)
+  role          Role?     @default(USER)
   image         String?
   accounts      Account[]
   sessions      Session[]
   todo          Todo[]
+  Comment       Comment[]
 }
 
 enum Role {
@@ -65,17 +65,48 @@ model VerificationToken {
 }
 
 model Todo {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String
-  status    Status   @default(ACTIVE)
-  user      User?    @relation(fields: [userId], references: [id])
-  userId    String?
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  dueDate     DateTime?
+  title       String
+  description String?
+  tags        String[]
+  files       File[]
+  comments    Comment[]
+  status      Status    @default(ACTIVE)
+  user        User?     @relation(fields: [userId], references: [id])
+  userId      String?
 }
 
 enum Status {
   ACTIVE
   COMPLETED
   BLOCK
+}
+
+model File {
+  id          String   @id @default(cuid())
+  name        String
+  size        Int
+  secret      String   @unique
+  contentType String
+  createdAt   DateTime
+  updatedAt   DateTime
+  url         String   @unique
+  todoId      String?
+
+  todo Todo? @relation(fields: [todoId], references: [id])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  comment   String
+  userId    String
+  todoId    String?
+  createdAt DateTime
+  updatedAt DateTime
+
+  todo Todo? @relation(fields: [todoId], references: [id])
+  user User? @relation(fields: [userId], references: [id])
 }

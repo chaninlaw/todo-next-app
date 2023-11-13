@@ -1,19 +1,15 @@
-"use client"
-
 import { nameToColor, isColorLight, cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { useSession } from "next-auth/react"
+import { getCurrentUser } from "@/lib/session"
 
 interface Props {
   className?: string
 }
 
-export default function UserAvatar({ className }: Props) {
-  const { data: session } = useSession()
+export default async function UserAvatar({ className }: Props) {
+  const user = await getCurrentUser()
 
-  if (!session) return <></>
-
-  const { user } = session
+  if (!user) return <></>
 
   let userName = ""
   if (!user?.name) {

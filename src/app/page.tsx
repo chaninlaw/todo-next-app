@@ -7,6 +7,8 @@ import Image from "next/image"
 import Link from "next/link"
 
 export default async function Home() {
+  // REMOVE THIS IN PROD
+  await new Promise((resolve) => setTimeout(resolve, 1000))
   return (
     <>
       <div className="relative z-[2]">
@@ -34,7 +36,7 @@ export default async function Home() {
               productivity, and bring a sense of organization and clarity to
               your life.
             </p>
-            <Link href="/app">
+            <Link href="/todo">
               <Button className="md:w-60 xl:mt-4">Get start now</Button>
             </Link>
           </div>

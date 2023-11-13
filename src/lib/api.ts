@@ -7,7 +7,7 @@ export const getFail = (message: string) =>
   new NextResponse(JSON.stringify({ message }), { status: 400 })
 
 export const postSuccess = <T>(data: T) =>
-  new NextResponse(JSON.stringify({ data }), { status: 200, url: "/todos" })
+  new NextResponse(JSON.stringify({ data }), { status: 200, url: "/app" })
 
 export const postFail = (message: string) =>
   new NextResponse(JSON.stringify({ message }), { status: 400 })

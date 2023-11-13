@@ -12,12 +12,10 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import UserAvatar from "@/components/user-avatar"
+import UserAvatar from "@/components/global/user-avatar"
 import SignOutDropDown from "@/components/landing/signout-dropdown"
 
-interface Props {}
-
-export default function NavMenu({}: Props) {
+export default function NavMenu() {
   return (
     <nav className="hidden md:flex">
       <DropdownMenu>

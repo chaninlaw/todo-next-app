@@ -1,4 +1,3 @@
-"use client"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -13,7 +12,6 @@ import {
   Receipt,
   Users2,
 } from "lucide-react"
-import { useState } from "react"
 import {
   Collapsible,
   CollapsibleContent,
@@ -25,33 +23,30 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { useSession } from "next-auth/react"
-import UserAvatar from "@/components/user-avatar"
+import UserAvatar from "@/components/global/user-avatar"
+import { getCurrentUser } from "@/lib/session"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function AppSideBar({ className }: SidebarProps) {
-  const { data: session } = useSession()
-  const [isOpen, setIsOpen] = useState(true)
-
+export async function AppSideBar({ className }: SidebarProps) {
+  const user = await getCurrentUser()
   return (
     <Collapsible
       className={cn(
         {
           "pb-12 hidden sm:block": true,
-          "sm:col-span-2 md:col-span-3 lg:col-span-3 xl:col-span-2": isOpen,
-          "sm:col-span-1": !isOpen,
+          "sm:col-span-2 md:col-span-3 lg:col-span-3 xl:col-span-2": true,
+          "sm:col-span-1": !true,
         },
         className
       )}
-      open={isOpen}
-      onOpenChange={setIsOpen}
+      open={true}
     >
       <CollapsibleContent className="space-y-4 py-4">
         <div className="px-3 py-2">
           <div className="mb-4 flex justify-between items-center">
             <h2 className="px-4 text-lg font-semibold tracking-tight">
-              Hi, {session?.user.name}
+              Hi, {user?.name}
             </h2>
             <CollapsibleTrigger>
               <TooltipProvider>
@@ -71,11 +66,11 @@ export function AppSideBar({ className }: SidebarProps) {
               <LayoutGrid className="mr-2 h-4 w-4" />
               Todo
             </Button>
-            <Button variant="ghost" className="w-full justify-start">
+            <Button variant="ghost" className="w-full justify-start" disabled>
               <PieChart className="mr-2 h-4 w-4" />
               Dashboard
             </Button>
-            <Button variant="ghost" className="w-full justify-start">
+            <Button variant="ghost" className="w-full justify-start" disabled>
               <ClipboardList className="mr-2 h-4 w-4" />
               Tasks
             </Button>
@@ -86,11 +81,11 @@ export function AppSideBar({ className }: SidebarProps) {
             Setting
           </h2>
           <div className="space-y-1">
-            <Button variant="ghost" className="w-full justify-start">
+            <Button variant="ghost" className="w-full justify-start" disabled>
               <Users2 className="mr-2 h-4 w-4" />
               Team
             </Button>
-            <Button variant="ghost" className="w-full justify-start">
+            <Button variant="ghost" className="w-full justify-start" disabled>
               <BarChartBig className="mr-2 h-4 w-4" />
               Reports
             </Button>
@@ -114,14 +109,14 @@ export function AppSideBar({ className }: SidebarProps) {
           </ScrollArea>
         </div>
       </CollapsibleContent>
-      <div className={cn({ hidden: isOpen })}>
+      <div className={cn({ hidden: true })}>
         <div className="px-3 py-2">
           <div className="mb-4 grid grid-cols-12">
             <h2
               className={cn(
                 "px-4 text-lg font-semibold tracking-tight grid place-items-center col-span-11",
                 {
-                  "px-2": !isOpen,
+                  "px-2": !true,
                 }
               )}
             >
@@ -131,10 +126,7 @@ export function AppSideBar({ className }: SidebarProps) {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <ChevronsRight
-                      onClick={() => setIsOpen(true)}
-                      className="mr-2 h-4 w-4 col-span-1 cursor-pointer rounded-sm hover:bg-secondary/80"
-                    />
+                    <ChevronsRight className="mr-2 h-4 w-4 col-span-1 cursor-pointer rounded-sm hover:bg-secondary/80" />
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>Collapse</p>

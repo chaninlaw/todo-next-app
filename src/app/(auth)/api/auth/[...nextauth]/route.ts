@@ -1,13 +1,28 @@
 import NextAuth from "next-auth/next"
-import Github, { GithubProfile } from "next-auth/providers/github"
+import Github from "next-auth/providers/github"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { PrismaClient } from "@prisma/client"
 import { NextAuthOptions } from "next-auth"
 import { compare } from "@/lib/utils"
+import { PrismaAdapter } from "@next-auth/prisma-adapter"
+// import { PrismaAdapter } from "@auth/prisma-adapter"
 
 const prisma = new PrismaClient()
 
 export const authOptions: NextAuthOptions = {
+  adapter: {
+    ...PrismaAdapter(prisma),
+    linkAccount: async (data) => {
+      // custom token transformation
+      delete data.refresh_token_expires_in
+      // console.log("----------------linkAccount----------------", { data })
+      try {
+        await prisma.account.create({ data })
+      } catch (error) {
+        console.error("Error creating account:", error)
+      }
+    },
+  },
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
@@ -18,13 +33,16 @@ export const authOptions: NextAuthOptions = {
     Github({
       clientId: process.env.GITHUB_ID ?? "",
       clientSecret: process.env.GITHUB_SECRET ?? "",
-      profile(profile, tokens) {
-        // console.log("----------Profile Github----------:", { profile, tokens })
-        return {
-          ...profile,
-          role: profile?.role ?? "USER",
-        }
-      },
+      // profile(profile, tokens) {
+      //   console.log("----------Profile Github----------:", { profile, tokens })
+      //   return {
+      //     id: profile.id.toString(),
+      //     name: profile.name,
+      //     email: profile.email,
+      //     image: profile.avatar_url,
+      //     role: profile?.role ?? "USER",
+      //   }
+      // },
     }),
     CredentialsProvider({
       name: "Credentials",
@@ -32,23 +50,30 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         if (!credentials) throw new Error("Invalid input")
         if (!credentials.email || !credentials.password)
           throw new Error("Please provide both your email and password")
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
-        })
+        try {
+          const user = await prisma.user.findUnique({
+            where: { email: credentials.email },
+          })
 
-        if (
-          user &&
-          user.password !== null &&
-          compare(credentials.password, user.password)
-        ) {
-          return user
-        } else {
-          throw new Error("Login failed. Please, try again")
+          if (
+            user &&
+            user.password !== null &&
+            compare(credentials.password, user.password)
+          ) {
+            return user
+          } else {
+            throw new Error("Login failed. Please, try again")
+          }
+        } catch (error) {
+          if (error instanceof Error) {
+            throw new Error(error.message)
+          }
+          throw error
         }
       },
     }),
@@ -66,6 +91,10 @@ export const authOptions: NextAuthOptions = {
     },
     redirect: async ({ url, baseUrl }) => {
       // console.log("----------Redirect Callback----------", { url, baseUrl })
+      // Allows relative callback URLs
+      if (url.startsWith("/")) return `${baseUrl}${url}`
+      // Allows callback URLs on the same origin
+      else if (new URL(url).origin === baseUrl) return url
       return baseUrl
     },
     jwt: async ({ token, user }) => {
@@ -77,9 +106,9 @@ export const authOptions: NextAuthOptions = {
 
       return token
     },
-    session: ({ session, token }) => {
+    session: async ({ session, token, user }) => {
       // console.log("----------Session Callback----------", { session, token })
-      if (session.user && token) {
+      if (session.user) {
         session.user.userId = token.userId
         session.user.role = token.role
       }

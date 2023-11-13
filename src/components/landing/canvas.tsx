@@ -7,13 +7,12 @@ const SPEED = 0.01
 export function Canvas(props: { className: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
-  useEffect(() => {
-    const canvas = canvasRef.current
+  const renderCanvas = (canvas: HTMLCanvasElement | null) => {
     if (canvas) {
       const ctx = canvas.getContext("2d")
       if (!ctx) return
       let time = 0
-      const loop = function () {
+      const loop = () => {
         for (let x = 0; x <= 32; x++) {
           for (let y = 0; y <= 32; y++) {
             color(ctx, {
@@ -30,6 +29,11 @@ export function Canvas(props: { className: string }) {
       }
       loop()
     }
+  }
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    renderCanvas(canvas)
   }, [])
 
   return (

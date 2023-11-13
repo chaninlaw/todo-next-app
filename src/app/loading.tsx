@@ -1,12 +1,12 @@
-import { Loader2 } from "lucide-react"
+import { CircularProgress } from "@nextui-org/react"
+import React from "react"
 
-export default function Loading() {
+interface Props {}
+
+export default function loading({}: Props) {
   return (
-    <div className="min-h-screen w-full bg-primary grid place-items-center">
-      <div className="flex justify-center items-center text-accent">
-        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-        <p>Loading...</p>
-      </div>
-    </div>
+    <main className="min-h-screen w-full bg-content grid place-items-center">
+      <CircularProgress label="Loading..." />
+    </main>
   )
 }
