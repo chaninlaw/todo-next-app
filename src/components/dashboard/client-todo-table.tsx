@@ -40,9 +40,10 @@ import CreateTodoModal from "@/components/dashboard/create-todo-modal"
 import { INITIAL_VISIBLE_COLUMNS } from "@/components/dashboard/todo-table.config"
 import { format, formatDistanceToNow } from "date-fns"
 import { TodoWithUser } from "@/lib/interface"
-import { ActionTodo, actionTodo } from "@/lib/actions/todos/validations"
 import DeletTodoModal from "./delete-todo-modal"
 import EditTodoModal from "./edit-todo-modal"
+import { ActionTodo, actionTodo } from "@/lib/actions/todos/optimisticAction"
+import { Session } from "next-auth"
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
   ACTIVE: "warning",
@@ -62,12 +63,14 @@ export interface StatusTodoOptions<T> {
 }
 
 export interface CustomTodoTable {
+  user: Session["user"]
   todoWithUser: TodoWithUser[]
   columns: CustomTodoColumns[]
   statusOptions: StatusTodoOptions<Todo["status"]>[]
 }
 
 export default function ClientTodoTable({
+  user,
   todoWithUser = [],
   columns = [],
   statusOptions = [],
@@ -80,7 +83,7 @@ export default function ClientTodoTable({
   const [statusFilter, setStatusFilter] = React.useState<Selection>("all")
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
   const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
-    column: "age",
+    column: "status",
     direction: "ascending",
   })
   const [optimisticTodos, updateOptimisticTodos] = React.useOptimistic(
@@ -217,6 +220,7 @@ export default function ClientTodoTable({
                     <Button
                       size="sm"
                       isIconOnly
+                      className="bg-transparent hover:bg-content3"
                       aria-label="Edit Todo"
                       onPress={onOpen}
                     >
@@ -233,7 +237,7 @@ export default function ClientTodoTable({
                     <Button
                       size="sm"
                       isIconOnly
-                      color="danger"
+                      className="bg-transparent hover:bg-content3"
                       aria-label="Delete Todo"
                       onPress={onOpen}
                     >
@@ -345,7 +349,7 @@ export default function ClientTodoTable({
               </DropdownMenu>
             </Dropdown>
             <CreateTodoModal
-              user={optimisticTodos[0].user}
+              user={user}
               updateOptimisticTodos={updateOptimisticTodos}
             >
               {(onOpen) => (
@@ -464,7 +468,10 @@ export default function ClientTodoTable({
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody emptyContent={"No todo found"} items={sortedItems}>
+      <TableBody
+        emptyContent={"You doesn't have any todo. Create one 🤩"}
+        items={sortedItems}
+      >
         {(item) => (
           <TableRow key={item.id}>
             {(columnKey) => (

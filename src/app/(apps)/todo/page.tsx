@@ -1,7 +1,6 @@
 import TodoTable from "@/components/dashboard/todo-table"
 import { TodosTableSkeleton } from "@/components/global/skeletons"
 import { Separator } from "@/components/ui/separator"
-import { getTodoByUser } from "@/lib/actions/todos"
 import { getCurrentUser } from "@/lib/session"
 import { Metadata } from "next"
 import { redirect } from "next/navigation"
@@ -21,7 +20,7 @@ export default async function Page() {
       <Separator />
       <div>
         <Suspense fallback={<TodosTableSkeleton />}>
-          <TodoTable userId={user.userId} />
+          <TodoTable user={user} />
         </Suspense>
       </div>
     </div>

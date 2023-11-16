@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Command } from "lucide-react"
-import { AuthForm } from "@/components/auth-form"
+import { AuthForm } from "@/components/global/auth-form"
 
 interface Props {
   searchParams?: Record<"callbackUrl" | "error", string>

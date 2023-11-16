@@ -2,8 +2,15 @@ import Link from "next/link"
 import NavMenu from "@/components/landing/nav-menu"
 import SignInButton from "@/components/landing/signin-button"
 import { cn } from "@/lib/utils"
+import { getCurrentUser } from "@/lib/session"
 
-export default function LandingPageMenu({ className }: { className?: string }) {
+export default async function LandingPageMenu({
+  className,
+}: {
+  className?: string
+}) {
+  const user = await getCurrentUser()
+
   return (
     <header
       className={cn(
@@ -31,7 +38,7 @@ export default function LandingPageMenu({ className }: { className?: string }) {
       </Link>
       <div className="flex">
         <NavMenu />
-        <SignInButton />
+        <SignInButton user={user} />
       </div>
     </header>
   )

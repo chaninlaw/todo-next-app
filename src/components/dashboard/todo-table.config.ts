@@ -1,7 +1,7 @@
 import { ChipProps, SortDescriptor } from "@nextui-org/react"
-import { CustomTodoColumns, StatusTodoOptions } from "./custom-todo-table"
 import { Todo } from "@prisma/client"
 import { TodoWithUser } from "@/lib/interface"
+import { CustomTodoColumns, StatusTodoOptions } from "./client-todo-table"
 
 export const columnsTodo: CustomTodoColumns[] = [
   { value: "TITLE", key: "title", sortable: true },

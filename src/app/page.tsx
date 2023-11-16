@@ -25,6 +25,7 @@ export default async function Home() {
               className="h-full object-cover object-left block z-10"
               src="/hero/hero-page-rm-bg.png"
               alt="hero"
+              priority
               height={2000}
               width={1333}
             />

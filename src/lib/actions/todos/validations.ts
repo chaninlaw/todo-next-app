@@ -1,38 +1,5 @@
-import { sortingTodo } from "@/components/dashboard/todo-table.config"
-import { TodoWithUser } from "@/lib/interface"
-import { SortDescriptor } from "@nextui-org/react"
 import { Status } from "@prisma/client"
 import { z } from "zod"
-
-export interface ActionTodo {
-  type: "ADD" | "EDIT" | "DELETE"
-  todo: TodoWithUser
-}
-
-export const actionTodo = (
-  state: TodoWithUser[],
-  action: ActionTodo,
-  sortDescriptor: SortDescriptor
-) => {
-  switch (action.type) {
-    case "ADD":
-      return sortingTodo([...state, action.todo], sortDescriptor)
-    case "EDIT":
-      const updateTodo = state.map((todo) => {
-        if (todo.id === action.todo.id) {
-          return action.todo
-        }
-        return todo
-      })
-      return sortingTodo(updateTodo, sortDescriptor)
-    case "DELETE":
-      const excludeTodo = state.filter((todo) => todo.id !== action.todo.id)
-      return sortingTodo(excludeTodo, sortDescriptor)
-
-    default:
-      return state
-  }
-}
 
 export type State = {
   errors?: {
@@ -43,7 +10,7 @@ export type State = {
   message?: string | null
 }
 
-export const TodoSchema = z.object({
+export const CreateTodoSchema = z.object({
   title: z.string({
     invalid_type_error: "Please enter todo title.",
     required_error: "Please enter todo title.",

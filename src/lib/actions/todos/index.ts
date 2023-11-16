@@ -1,10 +1,14 @@
 "use server"
 
+import { z } from "zod"
 import { User } from "@prisma/client"
 import prisma from "@/lib/db"
-import { ZodError, z } from "zod"
 import { revalidatePath } from "next/cache"
-import { UpdateTodoSchema, DeleteTodoSchema, TodoSchema } from "./validations"
+import {
+  UpdateTodoSchema,
+  DeleteTodoSchema,
+  CreateTodoSchema,
+} from "./validations"
 
 export const getTodoByUser = async (userId: User["id"]) => {
   try {
@@ -18,30 +22,28 @@ export const getTodoByUser = async (userId: User["id"]) => {
     })
     return todos
   } catch (error) {
-    return { message: "Failed to fetch todos data." }
+    return new Error("Failed to fetch todos data.")
   }
 }
 
-export const createTodo = async (formData: z.infer<typeof TodoSchema>) => {
-  const validatedFields = TodoSchema.safeParse(formData)
-
+export const createTodo = async (
+  formData: z.infer<typeof CreateTodoSchema>
+) => {
+  const validatedFields = CreateTodoSchema.safeParse(formData)
   if (!validatedFields.success) {
-    throw {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing Fields. Failed to create todo.",
-    }
+    const message = "Missing Fields. Failed to create todo."
+    const cause = validatedFields.error.flatten().fieldErrors
+    return new Error(message, { cause })
   }
 
   try {
     const data = validatedFields.data
     await prisma.todo.create({ data })
   } catch (error) {
-    if (error instanceof ZodError) {
-      return {
-        error: error.flatten().fieldErrors,
-        message: "Database Error: Failed to create todo.",
-      }
+    if (error instanceof Error) {
+      return new Error(error.message, { cause: error.cause })
     } else {
+      console.log(error)
       return error
     }
   }
@@ -55,10 +57,9 @@ export const updateTodo = async (
   const validatedFields = UpdateTodoSchema.safeParse(formData)
 
   if (!validatedFields.success) {
-    throw {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing Fields. Failed to update todo.",
-    }
+    const message = "Missing Fields. Failed to update todo."
+    const cause = validatedFields.error.flatten().fieldErrors
+    return new Error(message, { cause })
   }
 
   try {
@@ -68,11 +69,8 @@ export const updateTodo = async (
       data,
     })
   } catch (error) {
-    if (error instanceof ZodError) {
-      return {
-        error: error.flatten().fieldErrors,
-        message: "Database Error: Failed to update todo.",
-      }
+    if (error instanceof Error) {
+      return new Error(error.message, { cause: error.cause })
     } else {
       return error
     }
@@ -87,10 +85,9 @@ export const deleteTodo = async (
   const validatedFields = DeleteTodoSchema.safeParse(formData)
 
   if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: "Todo id is missing.",
-    }
+    const message = "Todo id is missing."
+    const cause = validatedFields.error.flatten().fieldErrors
+    return new Error(message, { cause })
   }
 
   try {
@@ -99,11 +96,8 @@ export const deleteTodo = async (
       where: { id: todoId },
     })
   } catch (error) {
-    if (error instanceof ZodError) {
-      return {
-        error: error.flatten().fieldErrors,
-        message: "Database Error: Failed to delete todo.",
-      }
+    if (error instanceof Error) {
+      return new Error(error.message, { cause: error.cause })
     } else {
       return error
     }

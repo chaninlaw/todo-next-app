@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { cn, toastCatch } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import {
@@ -20,6 +20,7 @@ import { register } from "@/lib/actions/authenticate"
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { CredentialsSchema } from "@/lib/actions/authenticate/validation"
+import { toastCatch } from "@/lib/toastCatch"
 
 interface LoginFormProps extends React.HTMLAttributes<HTMLDivElement> {
   callbackUrl?: string

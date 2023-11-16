@@ -134,26 +134,26 @@ export const authOptions: NextAuthOptions = {
       console.debug(code, metadata)
     },
   },
-  events: {
-    async signIn(message) {
-      // console.log("-----------on successful sign in----------", message)
-    },
-    async signOut(message) {
-      // console.log("-----------on signout----------", message)
-    },
-    async createUser(message) {
-      // console.log("-----------user created----------", message)
-    },
-    async updateUser(message) {
-      // console.log("-----------user updated----------", message)
-    },
-    async linkAccount(message) {
-      // console.log("-----------accountn----------", message)
-    },
-    async session(message) {
-      // console.log("-----------session is active----------", message)
-    },
-  },
+  // events: {
+  //   async signIn(message) {
+  //     // console.log("-----------on successful sign in----------", message)
+  //   },
+  //   async signOut(message) {
+  //     // console.log("-----------on signout----------", message)
+  //   },
+  //   async createUser(message) {
+  //     // console.log("-----------user created----------", message)
+  //   },
+  //   async updateUser(message) {
+  //     // console.log("-----------user updated----------", message)
+  //   },
+  //   async linkAccount(message) {
+  //     // console.log("-----------accountn----------", message)
+  //   },
+  //   async session(message) {
+  //     // console.log("-----------session is active----------", message)
+  //   },
+  // },
 }
 
 const handler = NextAuth(authOptions)

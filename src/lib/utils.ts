@@ -18,14 +18,6 @@ export function fromDate(time: number, date = Date.now()) {
   return new Date(date + time * 1000)
 }
 
-export function toastCatch(error: any) {
-  if (error instanceof Error) {
-    throw new Error(error.message)
-  } else {
-    throw new Error("Something went wrong")
-  }
-}
-
 export function nameToColor(name: string): string {
   const hash = name
     .split("")

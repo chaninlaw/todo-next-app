@@ -11,26 +11,33 @@ export async function register(credentials: z.infer<typeof CredentialsSchema>) {
   const validatedFields = CredentialsSchema.safeParse(credentials)
 
   if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing Fields. Failed to register.",
-    }
+    const message = "Missing Fields. Failed to register."
+    const cause = validatedFields.error.flatten().fieldErrors
+    throw new Error(message, { cause })
   }
 
-  const { email, password } = validatedFields.data
+  try {
+    const { email, password } = validatedFields.data
 
-  const hasUser = await prisma.user.findUnique({ where: { email } })
+    const hasUser = await prisma.user.findUnique({ where: { email } })
 
-  if (hasUser) return { message: "Email is already exists!" }
+    if (hasUser) throw new Error("Email is already exists!")
 
-  await prisma.user.create({
-    data: {
-      email,
-      password: hash(password),
-      role: "USER",
-      name: email,
-    },
-  })
+    await prisma.user.create({
+      data: {
+        email,
+        password: hash(password),
+        role: "USER",
+        name: email,
+      },
+    })
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message, { cause: error.cause })
+    } else {
+      throw error
+    }
+  }
 
   revalidatePath("/todo")
   redirect("/todo")

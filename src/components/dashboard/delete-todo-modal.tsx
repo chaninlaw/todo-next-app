@@ -1,4 +1,6 @@
-import React from "react"
+"use client"
+
+import React, { useEffect, useRef } from "react"
 import {
   Modal,
   ModalContent,
@@ -12,9 +14,9 @@ import { AnimationProps } from "framer-motion"
 import { deleteTodo } from "@/lib/actions/todos"
 import { useToast } from "@/components/ui/use-toast"
 import { ToastAction } from "@/components/ui/toast"
-import { ActionTodo } from "@/lib/actions/todos/validations"
 import { TodoWithUser } from "@/lib/interface"
 import { AlertTriangleIcon } from "lucide-react"
+import { ActionTodo } from "@/lib/actions/todos/optimisticAction"
 
 interface Props {
   todo: TodoWithUser
@@ -28,6 +30,7 @@ export default function DeletTodoModal({
   children,
 }: Props) {
   const { toast } = useToast()
+  const btnRef = useRef<HTMLButtonElement | null>(null)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   const variants: AnimationProps["variants"] = {
@@ -48,6 +51,12 @@ export default function DeletTodoModal({
       },
     },
   }
+
+  useEffect(() => {
+    if (isOpen && btnRef.current) {
+      btnRef.current.focus()
+    }
+  }, [isOpen])
 
   return (
     <>
@@ -76,6 +85,8 @@ export default function DeletTodoModal({
               </ModalBody>
               <ModalFooter>
                 <Button
+                  ref={btnRef}
+                  autoFocus
                   color="danger"
                   variant="flat"
                   aria-label="Confirm"
@@ -106,7 +117,7 @@ export default function DeletTodoModal({
                   Delete
                 </Button>
 
-                <Button autoFocus aria-label="Cancel" onPress={onClose}>
+                <Button aria-label="Cancel" onPress={onClose}>
                   Cancel
                 </Button>
               </ModalFooter>

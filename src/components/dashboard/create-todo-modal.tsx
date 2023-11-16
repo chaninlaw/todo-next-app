@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { startTransition } from "react"
 import { z } from "zod"
 import { cn } from "@/lib/utils"
 import {
@@ -19,7 +19,6 @@ import {
   Select,
   SelectItem,
 } from "@nextui-org/react"
-import { User } from "@prisma/client"
 import { CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
 import { Calendar } from "@/components/ui/calendar"
@@ -34,14 +33,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { ActionTodo, TodoSchema } from "@/lib/actions/todos/validations"
 import { createTodo } from "@/lib/actions/todos"
 import { uniqueId } from "lodash"
-import { useToast } from "@/components/ui/use-toast"
-import { ToastAction } from "@/components/ui/toast"
+import { toastCatch } from "@/lib/toastCatch"
+import { ActionTodo } from "@/lib/actions/todos/optimisticAction"
+import { CreateTodoSchema } from "@/lib/actions/todos/validations"
+import { Session } from "next-auth"
 
 interface Props {
-  user: User | null
+  user: Session["user"]
   updateOptimisticTodos: (action: ActionTodo) => void
   children: (onOpen: () => void) => React.ReactNode
 }
@@ -51,13 +51,10 @@ export default function CreateTodoModal({
   updateOptimisticTodos,
   children,
 }: Props) {
-  const { toast } = useToast()
-  if (!user) return <></>
-
-  const form = useForm<z.infer<typeof TodoSchema>>({
-    resolver: zodResolver(TodoSchema),
+  const form = useForm<z.infer<typeof CreateTodoSchema>>({
+    resolver: zodResolver(CreateTodoSchema),
     defaultValues: {
-      userId: user.id,
+      userId: user.userId,
       title: "",
       description: "",
       dueDate: undefined,
@@ -66,39 +63,29 @@ export default function CreateTodoModal({
   })
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
 
-  const onSubmit = async (formData: z.infer<typeof TodoSchema>) => {
+  const onSubmit = async (formData: z.infer<typeof CreateTodoSchema>) => {
     try {
-      updateOptimisticTodos({
-        type: "ADD",
-        todo: {
-          ...formData,
-          description:
-            formData.description === undefined ? null : formData.description,
-          dueDate: formData.dueDate === undefined ? null : formData.dueDate,
-          updatedAt: new Date(),
-          createdAt: new Date(),
-          id: uniqueId(),
-          tags: [""],
-          user,
-        },
-      })
+      startTransition(() =>
+        updateOptimisticTodos({
+          type: "ADD",
+          todo: {
+            ...formData,
+            description:
+              formData.description === undefined ? null : formData.description,
+            dueDate: formData.dueDate === undefined ? null : formData.dueDate,
+            updatedAt: new Date(),
+            createdAt: new Date(),
+            id: uniqueId(),
+            tags: [""],
+            user,
+          },
+        })
+      )
       onClose()
       await createTodo(formData)
       form.reset()
     } catch (error) {
-      if (error instanceof Error) {
-        // form.setError({ ...error.message })
-        toast({
-          variant: "destructive",
-          title: "Failed to create a todo.",
-          description: error.message,
-          action: (
-            <ToastAction onClick={onOpen} altText="Try again">
-              Try again
-            </ToastAction>
-          ),
-        })
-      }
+      toastCatch(error, onOpen)
     }
   }
 
@@ -300,13 +287,7 @@ export default function CreateTodoModal({
                     >
                       Back
                     </Button>
-                    <Button
-                      type="submit"
-                      color="primary"
-                      onPress={async () => {
-                        await onSubmit(form.getValues())
-                      }}
-                    >
+                    <Button type="submit" color="primary">
                       Create
                     </Button>
                   </ModalFooter>
