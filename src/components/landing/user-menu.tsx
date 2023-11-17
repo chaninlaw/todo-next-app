@@ -14,11 +14,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import UserAvatar from "@/components/global/user-avatar"
 import SignOutDropDown from "@/components/landing/signout-dropdown"
-// import { useTheme } from "next-themes"
+import DropdownTheme from "@/components/global/dropdown-theme"
 
-export default function NavMenu() {
-  // const { setTheme } = useTheme()
-
+export default async function NavMenu() {
   return (
     <nav className="hidden md:flex">
       <DropdownMenu>
@@ -69,23 +67,7 @@ export default function NavMenu() {
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem>Support</DropdownMenuItem>
-          {/* <DropdownMenuSub>
-            <DropdownMenuSubTrigger>Theme</DropdownMenuSubTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent>
-                <DropdownMenuItem onClick={() => setTheme("dark")}>
-                  Dark
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("light")}>
-                  Light
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => setTheme("system")}>
-                  System
-                </DropdownMenuItem>
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
-          </DropdownMenuSub> */}
+          <DropdownTheme />
           <DropdownMenuSeparator />
           <SignOutDropDown />
         </DropdownMenuContent>

@@ -1,12 +1,13 @@
 import Link from "next/link"
 import UserMenu from "@/components/landing/user-menu"
 import SignInButton from "@/components/landing/signin-button"
-import { getCurrentUser } from "@/lib/session"
 import { Navbar, NavbarBrand, NavbarContent } from "@nextui-org/react"
 import { CommandIcon } from "lucide-react"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/app/(auth)/api/auth/[...nextauth]/route"
 
 export default async function LandingPageMenu() {
-  const user = await getCurrentUser()
+  const session = await getServerSession(authOptions)
 
   return (
     <Navbar isBordered>
@@ -19,7 +20,7 @@ export default async function LandingPageMenu() {
         </Link>
         <NavbarContent justify="end" className="flex gap-3">
           <UserMenu />
-          <SignInButton user={user} />
+          <SignInButton user={session?.user} />
         </NavbarContent>
       </NavbarContent>
     </Navbar>
