@@ -33,11 +33,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { ActionTodo, UpdateTodoSchema } from "@/lib/actions/todos/validations"
 import { updateTodo } from "@/lib/actions/todos"
 import { useToast } from "@/components/ui/use-toast"
 import { ToastAction } from "@/components/ui/toast"
 import { TodoWithUser } from "@/lib/interface"
+import { ActionTodo } from "@/lib/actions/todos/optimisticAction"
+import { UpdateTodoSchema } from "@/lib/actions/todos/validations"
 
 interface Props {
   todo: TodoWithUser

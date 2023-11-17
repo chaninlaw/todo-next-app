@@ -63,9 +63,10 @@ export function AuthForm({
     await signIn("github", {
       redirect: false,
       callbackUrl: "/todo",
+    }).catch((err) => {
+      toastCatch(err)
+      setAuthLoading(false)
     })
-      .catch(toastCatch)
-      .finally(() => setAuthLoading(false))
   }
 
   return (

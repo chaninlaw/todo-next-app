@@ -1,4 +1,4 @@
-import { AuthForm } from "@/components/auth-form"
+import { AuthForm } from "@/components/global/auth-form"
 import Link from "next/link"
 import { Command } from "lucide-react"
 

@@ -1,10 +1,9 @@
 import LandingPageMenu from "@/components/landing/landingpage-menu"
-import { Button } from "@/components/ui/button"
 import { Canvas } from "@/components/landing/canvas"
 import { Separator } from "@/components/ui/separator"
 import { Github } from "lucide-react"
-import Image from "next/image"
 import Link from "next/link"
+import { Button } from "@nextui-org/react"
 
 export default async function Home() {
   // REMOVE THIS IN PROD
@@ -15,94 +14,64 @@ export default async function Home() {
         <LandingPageMenu />
         <section
           id="hero"
-          className="w-full p-2 md:grid md:grid-cols-2 md:grid-rows-2 md:gap-1 md:p-8"
+          className="container mx-auto mt-20 mb-10 flex flex-col justify-center items-center sm:my-24 md:my-32 lg:my-28"
         >
-          <h1 className="font-bold text-[2.7rem] mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary-foreground md:text-5xl xl:text-8xl">
-            Ultimate Task Management Solution!
+          <h1
+            className="w-3/4
+           font-bold min-[270px]:text-[2.2rem] min-[370px]:text-[2.4rem] min-[420px]:text-[2.7rem] xs:text-[2.7rem] mb-4 bg-clip-text text-center  text-transparent bg-gradient-to-r from-primary via-foreground-500 to-primary md:text-5xl xl:text-8xl"
+          >
+            Embark on a Journey of Seamless Innovation
           </h1>
-          <div className="hidden h-full md:block md:row-span-2">
-            <Image
-              className="h-full object-cover object-left block z-10"
-              src="/hero/hero-page-rm-bg.png"
-              alt="hero"
-              priority
-              height={2000}
-              width={1333}
-            />
-          </div>
-          <div className="w-full">
-            <p className="font-medium text-primary text-sm mb-4 md:text-md xl:text-lg">
-              Do you often find yourself juggling multiple tasks, Todo app is
-              way to transform the way you manage your tasks, boost your
-              productivity, and bring a sense of organization and clarity to
-              your life.
+
+          <div className="w-full md:w-1/2 flex flex-col mt-14 justify-center items-center">
+            <p className="font-medium text-primary md:text-background text-sm text-center mb-4 md:mt-0 md:text-md xl:text-lg xl:text-white xl:mt-20 2xl:mt-0 2xl:text-background">
+              "Step into a world where innovation is your companion and
+              simplicity is your guide. Our solutions redefine the way you
+              navigate the digital landscape, making every step of your journey
+              an experience worth embracing."
             </p>
             <Link href="/todo">
-              <Button className="md:w-60 xl:mt-4">Get start now</Button>
+              <Button color="primary" className="md:w-60 xl:mt-4">
+                Get start now
+              </Button>
             </Link>
           </div>
         </section>
+        <Separator />
         <div className="md:grid md:grid-cols-3">
-          <section
-            id="streamline"
-            className="py-12 px-4 text-primary text-center flex flex-col justify-center items-center"
-          >
-            <h2 className="text-2xl font-bold mb-4">Streamline Your Tasks</h2>
-            <p>Effortlessly organize, prioritize, and categorize tasks.</p>
-          </section>
-
-          <section
-            id="stay-organized"
-            className="py-12 px-4 text-primary backdrop-blur-sm bg-zinc-100/50 rounded-sm text-center flex flex-col justify-center items-center"
-          >
+          <section id="efficiency" className="py-12 px-4 text-primary">
             <h2 className="text-2xl font-bold mb-4">
-              Stay Organized Anytime, Anywhere
-            </h2>
-            <p>Access your tasks on the go, synced across all devices.</p>
-          </section>
-
-          <section
-            id="smart-features"
-            className="py-12 px-4 text-primary text-center flex flex-col justify-center items-center"
-          >
-            <h2 className="text-2xl font-bold mb-4">
-              Smart Features for Ultimate Productivity
+              Effortless Efficiency at Your Fingertips
             </h2>
             <p>
-              Set reminders, due dates, recurring tasks, and collaboration
-              options.
+              "Experience the magic of streamlined efficiency with our intuitive
+              features. From task management to seamless collaboration, each
+              element is designed to make your workflow effortless and
+              enjoyable."
             </p>
           </section>
 
-          <section
-            id="privacy-security"
-            className="py-12 px-4 text-primary backdrop-blur-sm bg-zinc-100/50 rounded-sm text-center flex flex-col justify-center items-center"
-          >
-            <h2 className="text-2xl font-bold mb-4 ">
-              Your Privacy and Security Matter
+          <section id="simply" className="py-12 px-4 text-primary">
+            <h2 className="text-2xl font-bold mb-4">
+              Precision Crafted, Simply Powerful.
             </h2>
-            <p>Cutting-edge security to safeguard your task data.</p>
+            <p>
+              "Discover a suite of tools that marries precision with simplicity.
+              Every feature is a masterpiece, enhancing your experience with
+              powerful functionality wrapped in an easy-to-use package."
+            </p>
           </section>
 
-          <section
-            id="join-today"
-            className="py-12 px-4 text-primary text-center flex flex-col justify-center items-center"
-          >
-            <h2 className="text-2xl font-bold mb-4">Join Today</h2>
-            <p>Transform the way you manage tasks effortlessly.</p>
-          </section>
-
-          <section
-            id="get-started"
-            className="bg-zinc-900 text-primary rounded-sm text-white text-center py-8 px-4 flex flex-col justify-center items-center"
-          >
-            <h3 className="text-2xl font-bold">Get Started for Free</h3>
-            <p>Start your journey to a more organized life!</p>
-            <Link href="/register">
-              <Button className="mt-4" variant="secondary">
-                Sign Up Now
-              </Button>
-            </Link>
+          <section id="redefined" className="py-12 px-4 text-primary">
+            <h2 className="text-2xl font-bold mb-4 ">
+              Elevate Your Possibilities: Features Redefined.
+            </h2>
+            <p>
+              "Your digital experience reaches new heights with features crafted
+              for excellence. Explore a world where every tool is a testament to
+              innovation, ensuring your possibilities are not just met but
+              exceeded."
+            </p>
           </section>
         </div>
         <Separator />

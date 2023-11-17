@@ -40,7 +40,7 @@ export function Canvas(props: { className: string }) {
     <canvas
       ref={canvasRef}
       className={cn(
-        "absolute h-[600px] w-full max-w-[600px] aspect-square rounded-full -top-0 -translate-y-40 -z-10 transform-gpu md:max-w-[800px] md:h-[800px] md:-translate-y-[300px] lg:max-w-[1000px] lg:h-[1000px] lg:-translate-y-[600px] xl:max-w-[1350px] xl:h-[1350px] xl:-translate-y-[700px] xl:translate-x-[300px]",
+        "absolute -z-10 inset-0 w-full aspect-square rounded-full transform-gpu mx-auto my-auto -translate-y-[15%]  lg:h-[650px] lg:max-w-[650px] xl:h-[800px] xl:max-w-[800px]",
         props.className
       )}
       width="32px"
