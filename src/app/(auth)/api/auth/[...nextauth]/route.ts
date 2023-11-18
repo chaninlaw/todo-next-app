@@ -9,7 +9,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter"
 
 const prisma = new PrismaClient()
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   adapter: {
     ...PrismaAdapter(prisma),
     linkAccount: async (data) => {
@@ -158,4 +158,4 @@ export const authOptions: NextAuthOptions = {
 
 const handler = NextAuth(authOptions)
 
-export { handler as GET, handler as POST }
+export { handler as GET, handler as POST, authOptions }
