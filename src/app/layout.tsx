@@ -8,7 +8,6 @@ import { authOptions } from "@/app/(auth)/api/auth/[...nextauth]/route"
 
 export const fontSans = FontSans({
   subsets: ["latin"],
-  variable: "--font-sans",
   preload: true,
 })
 
@@ -35,7 +34,7 @@ export default async function RootLayout({
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
+          fontSans.className
         )}
       >
         <Providers session={session}>{children}</Providers>
