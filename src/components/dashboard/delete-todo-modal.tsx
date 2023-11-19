@@ -80,7 +80,7 @@ export default function DeletTodoModal({
                 <div className="text-md">
                   Do yo want to <span className="text-danger">delete</span> this
                   todo? <br />
-                  This action can't revert.
+                  This action can&apos;t revert.
                 </div>
               </ModalBody>
               <ModalFooter>

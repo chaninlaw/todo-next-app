@@ -49,7 +49,7 @@ export function Canvas(props: { className: string }) {
   )
 }
 
-const C1 = 200 // 191
+const C1 = 191
 const C2 = 64
 
 export const color = (

@@ -52,13 +52,11 @@ export default function EditTodoModal({
   children,
 }: Props) {
   const { toast } = useToast()
-  if (!todo?.userId) return <></>
-
   const form = useForm<z.infer<typeof UpdateTodoSchema>>({
     resolver: zodResolver(UpdateTodoSchema),
     defaultValues: {
       id: todo.id,
-      userId: todo.userId,
+      userId: todo?.userId ?? undefined,
       title: todo.title,
       description: todo.description ?? undefined,
       dueDate: todo.dueDate ?? undefined,
@@ -66,7 +64,7 @@ export default function EditTodoModal({
     },
     values: {
       id: todo.id,
-      userId: todo.userId,
+      userId: todo?.userId ?? "",
       title: todo.title,
       description: todo.description ?? undefined,
       dueDate: todo.dueDate ?? undefined,

@@ -12,9 +12,6 @@ import {
 
 export const getTodoByUser = async (userId: User["id"]) => {
   try {
-    // REMOVE THIS IN PROD
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
     const todos = await prisma.todo.findMany({
       where: { userId },
       orderBy: { status: "asc" },

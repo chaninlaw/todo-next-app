@@ -7,8 +7,6 @@ import { Button } from "@nextui-org/react"
 import Particles from "@/components/landing/particle"
 
 export default async function Home() {
-  // REMOVE THIS IN PROD
-  await new Promise((resolve) => setTimeout(resolve, 1000))
   return (
     <>
       <div className="relative z-[2]">
@@ -30,10 +28,10 @@ export default async function Home() {
 
           <div className="w-full md:w-1/2 flex flex-col mt-14 justify-center items-center">
             <p className="font-medium text-primary md:text-background text-sm text-center mb-4 md:mt-0 md:text-md xl:text-lg xl:text-white xl:mt-20 2xl:mt-0 2xl:text-background">
-              "Step into a world where innovation is your companion and
+              &quot;Step into a world where innovation is your companion and
               simplicity is your guide. Our solutions redefine the way you
               navigate the digital landscape, making every step of your journey
-              an experience worth embracing."
+              an experience worth embracing.&quot;
             </p>
             <Link href="/todo">
               <Button color="primary" className="md:w-60 xl:mt-4">
@@ -49,10 +47,10 @@ export default async function Home() {
               Effortless Efficiency at Your Fingertips
             </h2>
             <p>
-              "Experience the magic of streamlined efficiency with our intuitive
-              features. From task management to seamless collaboration, each
-              element is designed to make your workflow effortless and
-              enjoyable."
+              &quot;Experience the magic of streamlined efficiency with our
+              intuitive features. From task management to seamless
+              collaboration, each element is designed to make your workflow
+              effortless and enjoyable.&quot;
             </p>
           </section>
 
@@ -61,9 +59,9 @@ export default async function Home() {
               Precision Crafted, Simply Powerful.
             </h2>
             <p>
-              "Discover a suite of tools that marries precision with simplicity.
-              Every feature is a masterpiece, enhancing your experience with
-              powerful functionality wrapped in an easy-to-use package."
+              &quot;Discover a suite of tools that marries precision with
+              simplicity. Every feature is a masterpiece, enhancing your
+              experience with &quot;
             </p>
           </section>
 
@@ -72,10 +70,10 @@ export default async function Home() {
               Elevate Your Possibilities: Features Redefined.
             </h2>
             <p>
-              "Your digital experience reaches new heights with features crafted
-              for excellence. Explore a world where every tool is a testament to
-              innovation, ensuring your possibilities are not just met but
-              exceeded."
+              &quot;Your digital experience reaches new heights with features
+              crafted for excellence. Explore a world where every tool is a
+              testament to innovation, ensuring your possibilities are not just
+              met but exceeded.&quot;
             </p>
           </section>
         </div>

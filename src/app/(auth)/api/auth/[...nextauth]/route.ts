@@ -5,7 +5,8 @@ import { PrismaClient } from "@prisma/client"
 import { NextAuthOptions } from "next-auth"
 import { compare } from "@/lib/utils"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
-// import { PrismaAdapter } from "@auth/prisma-adapter"
+
+export const dynamic = "force-dynamic"
 
 const prisma = new PrismaClient()
 
