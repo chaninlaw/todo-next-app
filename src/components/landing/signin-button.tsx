@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Session } from "next-auth"
 import { signIn } from "next-auth/react"
