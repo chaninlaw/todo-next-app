@@ -11,21 +11,17 @@ import {
   ChipProps,
   SortDescriptor,
   AvatarIcon,
-} from "@nextui-org/react"
-import {
-  DropdownTrigger,
-  Dropdown,
-  DropdownMenu,
-  DropdownItem,
-} from "@nextui-org/dropdown"
-import {
   Table,
   TableHeader,
   TableColumn,
   TableBody,
   TableRow,
   TableCell,
-} from "@nextui-org/table"
+  DropdownTrigger,
+  Dropdown,
+  DropdownMenu,
+  DropdownItem,
+} from "@nextui-org/react"
 import {
   CalendarIcon,
   ChevronDownIcon,
@@ -35,7 +31,6 @@ import {
   XIcon,
 } from "lucide-react"
 import { capitalize } from "lodash"
-import { Todo } from "@prisma/client"
 import CreateTodoModal from "@/components/dashboard/create-todo-modal"
 import { INITIAL_VISIBLE_COLUMNS } from "@/components/dashboard/todo-table.config"
 import { format, formatDistanceToNow } from "date-fns"
@@ -44,6 +39,7 @@ import DeletTodoModal from "./delete-todo-modal"
 import EditTodoModal from "./edit-todo-modal"
 import { ActionTodo, actionTodo } from "@/lib/actions/todos/optimisticAction"
 import { Session } from "next-auth"
+import { Todo } from "@prisma/client"
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
   ACTIVE: "warning",
