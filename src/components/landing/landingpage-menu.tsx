@@ -4,7 +4,7 @@ import SignInButton from "@/components/landing/signin-button"
 import { Navbar, NavbarBrand, NavbarContent } from "@nextui-org/react"
 import { CommandIcon } from "lucide-react"
 import { getServerSession } from "next-auth"
-import { authOptions } from "@/app/(auth)/api/auth/[...nextauth]/route"
+import { authOptions } from "@/lib/auth"
 
 export default async function LandingPageMenu() {
   const session = await getServerSession(authOptions)
