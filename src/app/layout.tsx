@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 import Providers from "@/components/global/providers"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
+import { Analytics } from "@vercel/analytics/react"
 
 export const fontSans = FontSans({
   subsets: ["latin"],
@@ -37,7 +38,10 @@ export default async function RootLayout({
           fontSans.className
         )}
       >
-        <Providers session={session}>{children}</Providers>
+        <Providers session={session}>
+          {children}
+          <Analytics />
+        </Providers>
       </body>
     </html>
   )
