@@ -1,21 +1,23 @@
+"use client"
+
 import { nameToColor, isColorLight, cn } from "@/lib/utils"
-import { getCurrentUser } from "@/lib/session"
 import { Avatar } from "@nextui-org/react"
+import { useSession } from "next-auth/react"
 
 interface Props {
   className?: string
 }
 
-export default async function UserAvatar({ className }: Props) {
-  const user = await getCurrentUser()
+export default function UserAvatar({ className }: Props) {
+  const { data: session, status } = useSession()
 
-  if (!user) return <></>
+  if (status === "loading") return null
 
   let userName = ""
-  if (!user?.name) {
+  if (!session?.user?.name) {
     userName = "U K"
   } else {
-    userName = user.name
+    userName = session.user.name
   }
   const [first, last] = userName.split(" ")
   const backgroundColor = nameToColor(userName)
@@ -27,7 +29,7 @@ export default async function UserAvatar({ className }: Props) {
       className={`transition-transform`}
       style={{ backgroundColor }}
       color="success"
-      src={user?.image ?? undefined}
+      src={session?.user?.image ?? undefined}
       fallback={
         <p
           className={cn("text-lg font-bold text-black hover:text-zinc-600", {

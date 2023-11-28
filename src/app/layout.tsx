@@ -3,8 +3,6 @@ import type { Metadata } from "next"
 import { Inter as FontSans } from "next/font/google"
 import { cn } from "@/lib/utils"
 import Providers from "@/components/global/providers"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
 import { Analytics } from "@vercel/analytics/react"
 
 export const fontSans = FontSans({
@@ -29,7 +27,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const session = await getServerSession(authOptions)
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -38,7 +35,7 @@ export default async function RootLayout({
           fontSans.className
         )}
       >
-        <Providers session={session}>
+        <Providers>
           {children}
           <Analytics />
         </Providers>

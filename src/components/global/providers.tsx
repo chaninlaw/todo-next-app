@@ -1,6 +1,5 @@
 "use client"
 
-import { Session } from "next-auth"
 import { SessionProvider } from "next-auth/react"
 import { ThemeProvider } from "next-themes"
 import { PropsWithChildren } from "react"
@@ -8,12 +7,9 @@ import { TailwindIndicator } from "@/components/global/tailwind-indicator"
 import { Toaster } from "@/components/ui/toaster"
 import { NextUIProvider } from "@nextui-org/react"
 
-export default function Providers({
-  session,
-  children,
-}: PropsWithChildren<{ session: Session | null }>) {
+export default function Providers({ children }: PropsWithChildren) {
   return (
-    <SessionProvider session={session}>
+    <SessionProvider>
       <NextUIProvider>
         <ThemeProvider
           attribute="class"
